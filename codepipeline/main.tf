@@ -12,7 +12,7 @@ data "aws_iam_policy_document" "codebuild_assume_role_policy" {
 }
 
 resource "aws_iam_role" "codebuild-role" {
-  name = var.application+"-codebuild role-"+var.environment
+  name ="${var.application}-codebuild-role-${var.environment}"
   assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role_policy.json
   tags =   {
     application = var.application
@@ -23,21 +23,20 @@ resource "aws_iam_role" "codebuild-role" {
   }
   managed_policy_arns = []
 }
-data "aws_iam_policy_document" "iam-policy" {
+data "aws_iam_policy_document" "codebuild-role-policy" {
     statement {
       effect = "Allow"
-      sid = "AWS IAM codebuild role policy"
       resources = ["*"]
       actions = ["s3:*"]
     }
 }
 resource "aws_iam_policy" "aws_codebuild_role_policy" {
-    policy = data.aws_iam_policy_document.codebuild_assume_role_policy.json
-    name = var.application+"-codebuild-role-policy-"+var.environment
+    policy = data.aws_iam_policy_document.codebuild-role-policy.json
+    name = "${var.application}-codebuild-role-policy-${var.environment}"
 }
 resource "aws_iam_role_policy_attachment" "aws_iam_attachment" {
     policy_arn = aws_iam_policy.aws_codebuild_role_policy.arn
-    role = aws_iam_role.codebuild-role.arn
+    role = aws_iam_role.codebuild-role.name
 }
 # resource "aws_iam_policy" "codebuild-role-policy" {
 #     name = var.application+"-codebuild-role-policy-"+var.environment

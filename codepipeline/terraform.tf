@@ -29,7 +29,7 @@ terraform {
   }
 backend "s3" {
     bucket                  = "terraform-state-devops-seq"
-    key                     = "state"
+    key                     = "state.tfstate"
     region                  = "us-east-1"
   }
 }
